@@ -1,0 +1,32 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_modules/
+
+# Production builds
+dist/
+build/
+out/
+
+# Database directories & logs
+mongodb-data/
+mongodb-win32-x86_64-windows-7.0.6/
+mongodb.log*
+*.mdmp
+*.log*
+
+# Environment variables (Sensitive data)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env
+
+# Editor / System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

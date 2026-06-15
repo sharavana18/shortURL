@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, REDIRECT_URL } from '../context/AuthContext';
 import { 
   Link2, Copy, Check, BarChart2, Trash2, Edit2, 
   Plus, Calendar, ShieldAlert, Globe, ExternalLink, 
@@ -39,7 +39,7 @@ const Dashboard = () => {
   // Load URLs
   const fetchUrls = async () => {
     try {
-      const res = await authFetch('http://localhost:5000/api/urls');
+      const res = await authFetch('/urls');
       if (res.ok) {
         const data = await res.json();
         setUrls(data);
@@ -68,7 +68,7 @@ const Dashboard = () => {
     }
 
     try {
-      const res = await authFetch('http://localhost:5000/api/urls/shorten', {
+      const res = await authFetch('/urls/shorten', {
         method: 'POST',
         body: JSON.stringify({
           originalUrl,
@@ -101,7 +101,7 @@ const Dashboard = () => {
     }
 
     try {
-      const res = await authFetch(`http://localhost:5000/api/urls/${id}`, {
+      const res = await authFetch(`/urls/${id}`, {
         method: 'DELETE'
       });
 
@@ -128,7 +128,7 @@ const Dashboard = () => {
     setIsEditing(true);
 
     try {
-      const res = await authFetch(`http://localhost:5000/api/urls/${editingUrl._id}`, {
+      const res = await authFetch(`/urls/${editingUrl._id}`, {
         method: 'PUT',
         body: JSON.stringify({ originalUrl: editDestinationUrl })
       });
@@ -149,7 +149,7 @@ const Dashboard = () => {
   };
 
   const handleCopyToClipboard = (shortCode, id) => {
-    const shortUrl = `http://localhost:5000/r/${shortCode}`;
+    const shortUrl = `${REDIRECT_URL}/${shortCode}`;
     navigator.clipboard.writeText(shortUrl);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -249,7 +249,7 @@ const Dashboard = () => {
                   <Check size={18} color="var(--success)" /> URL Shortened Successfully!
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '6px' }}>
-                  <span style={{ wordBreak: 'break-all', fontSize: '0.9rem' }}>http://localhost:5000/r/{formSuccess.shortCode}</span>
+                  <span style={{ wordBreak: 'break-all', fontSize: '0.9rem' }}>{REDIRECT_URL}/{formSuccess.shortCode}</span>
                   <button 
                     type="button" 
                     onClick={() => handleCopyToClipboard(formSuccess.shortCode, 'success')} 
@@ -313,7 +313,7 @@ const Dashboard = () => {
                 </thead>
                 <tbody>
                   {filteredUrls.map((url) => {
-                    const shortUrl = `http://localhost:5000/r/${url.shortCode}`;
+                    const shortUrl = `${REDIRECT_URL}/${url.shortCode}`;
                     return (
                       <tr key={url._id} className="animate-fade-in">
                         <td>

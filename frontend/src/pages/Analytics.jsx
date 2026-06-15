@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, REDIRECT_URL } from '../context/AuthContext';
 import { 
   ArrowLeft, BarChart2, Calendar, Clock, Globe, 
   Monitor, Laptop, ShieldAlert, Check, Copy
@@ -18,7 +18,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const res = await authFetch(`http://localhost:5000/api/analytics/${urlId}`);
+        const res = await authFetch(`/analytics/${urlId}`);
         const data = await res.json();
         
         if (!res.ok) {
@@ -37,7 +37,7 @@ const Analytics = () => {
   }, [urlId]);
 
   const handleCopy = (shortCode) => {
-    const shortUrl = `http://localhost:5000/r/${shortCode}`;
+    const shortUrl = `${REDIRECT_URL}/${shortCode}`;
     navigator.clipboard.writeText(shortUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -235,7 +235,7 @@ const Analytics = () => {
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f3f4f6' }}>http://localhost:5000/r/{urlInfo.shortCode}</span>
+              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f3f4f6' }}>{REDIRECT_URL}/{urlInfo.shortCode}</span>
               <button 
                 onClick={() => handleCopy(urlInfo.shortCode)} 
                 className="btn-secondary" 

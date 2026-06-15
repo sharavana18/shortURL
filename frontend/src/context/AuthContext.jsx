@@ -2,7 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const AuthContext = createContext(null);
 
-export const API_URL = 'http://localhost:5000/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+export const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL || 'http://localhost:5000/r';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -11,7 +12,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      // Decode user email from stored token or simply restore user metadata
       const storedEmail = localStorage.getItem('userEmail');
       if (storedEmail) {
         setUser({ email: storedEmail });
@@ -75,8 +75,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Helper fetcher function that automatically appends the JWT Authorization header
-  const authFetch = async (url, options = {}) => {
+  // Helper fetcher function that automatically appends the JWT Authorization header and base API_URL
+  const authFetch = async (endpoint, options = {}) => {
+    const url = endpoint.startsWith('http') ? endpoint : `${API_URL}${endpoint}`;
+    
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -92,7 +94,6 @@ export const AuthProvider = ({ children }) => {
     });
 
     if (res.status === 401) {
-      // Auto-logout if token expires or is rejected
       logout();
     }
 
